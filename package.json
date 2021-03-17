@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn src/index.ts",
     "build": "tsc",
     "start": "node build/index.js",
-    "migrate": "prisma migrate dev --name $NAME --preview-feature",
+    "dbpush": "prisma db push --preview-feature",
     "generate": "prisma generate",
     "seed": "ts-node prisma/testSeed.js"
   },
@@ -46,7 +46,8 @@
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "speakingurl": "^14.0.1",
-    "type-graphql": "^1.1.1"
+    "type-graphql": "^1.1.1",
+    "unique-names-generator": "^4.4.0"
   },
   "prettier": {
     "arrowParens": "always",

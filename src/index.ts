@@ -4,7 +4,6 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { graphqlUploadExpress } from 'graphql-upload';
 import cors from 'cors';
 
 import createSchema from './util/createSchema';
@@ -24,7 +23,6 @@ import { MyContext, prisma } from './types/MyContext';
         req,
         res,
       }),
-      uploads: false,
       formatError: (error: GraphQLError): GraphQLFormattedError => {
         if (error && error.extensions)
           error.extensions.code = 'GRAPHQL_VALIDATION_FAILED';
@@ -34,7 +32,6 @@ import { MyContext, prisma } from './types/MyContext';
 
     const app = express();
     app.use(cors());
-    app.use(graphqlUploadExpress({ maxFileSize: 46971520 }));
     app.use(express.static('public'));
     apolloServer.applyMiddleware({ app });
     const PORT = process.env.PORT || 5000;
