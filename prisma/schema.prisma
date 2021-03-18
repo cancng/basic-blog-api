@@ -22,21 +22,23 @@ model User {
   posts      Post[]
   categories Category[]
   comments   Comment[]
+  Page       Page[]
 }
 
 model Post {
-  id         String    @id @default(cuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  category   Category  @relation(fields: [categoryId], references: [id])
-  categoryId String
-  title      String
-  slug       String    @unique
-  body       String?
-  thumbnail  String?
-  comments   Comment[]
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  title       String
+  slug        String    @unique
+  body        String?
+  thumbnail   String?
+  isPublished Boolean   @default(true)
+  comments    Comment[]
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
 }
 
 model Category {
@@ -61,4 +63,15 @@ model Comment {
   postId     String
   user       User?    @relation(fields: [userId], references: [id])
   userId     String?
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  slug      String   @unique
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
 }

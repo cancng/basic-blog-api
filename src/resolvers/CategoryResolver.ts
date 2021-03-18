@@ -14,8 +14,8 @@ export class CategoryResolver {
     @Arg('data') { title, thumbnail }: CategoryInput,
     @Ctx() ctx: MyContext
   ) {
+    if (isEmpty(title)) throw new Error('Kategori başlığı gereklidir');
     try {
-      if (isEmpty(title)) throw new Error('Kategori başlığı gereklidir');
       let slug = generateSlug(title);
       const category = await ctx.prisma.category.findUnique({
         where: { slug },
@@ -31,8 +31,8 @@ export class CategoryResolver {
         },
       });
     } catch (error) {
-      console.log('catch err ⚠️', error);
-      throw error.message;
+      console.log('catch err ⚠️', error.message);
+      throw error;
     }
   }
 
@@ -43,8 +43,8 @@ export class CategoryResolver {
     @Arg('data') { title, thumbnail }: CategoryInput,
     @Ctx() ctx: MyContext
   ) {
+    if (isEmpty(title)) throw new Error('Kategori başlığı gereklidir');
     try {
-      if (isEmpty(title)) throw new Error('Kategori başlığı gereklidir');
       const slug = generateSlug(title);
       const category = await ctx.prisma.category.findUnique({
         where: { slug },
