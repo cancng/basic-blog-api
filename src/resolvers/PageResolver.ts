@@ -1,14 +1,14 @@
-import { Arg, Ctx, ID, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Authorized, Ctx, ID, Mutation, Resolver } from 'type-graphql';
 import { Page } from '@generated/type-graphql';
-import { isAuth } from '../middlewares/isAuth';
 import { PageInput } from './inputs/PageInput';
 import { MyContext } from '../types/MyContext';
 import { isEmpty } from 'class-validator';
 import { generateSlug } from '../util/functions';
+import { UserRole } from '.prisma/client';
 
 @Resolver()
 export class PageResolver {
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => Page)
   async createPage(
     @Arg('data') { title, content }: PageInput,
@@ -35,7 +35,7 @@ export class PageResolver {
     }
   }
 
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => Page)
   async editPage(
     @Arg('id', () => ID) id: string,
@@ -66,7 +66,7 @@ export class PageResolver {
     }
   }
 
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => String)
   async deletePage(@Arg('id', () => ID) id: string, @Ctx() ctx: MyContext) {
     try {

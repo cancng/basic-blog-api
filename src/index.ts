@@ -7,7 +7,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import cors from 'cors';
 
 import createSchema from './util/createSchema';
-import { MyContext, prisma } from './types/MyContext';
+import { createContext, MyContext, prisma } from './types/MyContext';
 
 (async () => {
   if (!process.env.JWT_SECRET) {
@@ -18,11 +18,7 @@ import { MyContext, prisma } from './types/MyContext';
     const initSchema = await createSchema();
     const apolloServer = new ApolloServer({
       schema: initSchema,
-      context: ({ req, res }: { req: any; res: any }): MyContext => ({
-        prisma,
-        req,
-        res,
-      }),
+      context: (ctx: MyContext) => ({ ...createContext(ctx) }),
       formatError: (error: GraphQLError): GraphQLFormattedError => {
         if (error && error.extensions)
           error.extensions.code = 'GRAPHQL_VALIDATION_FAILED';

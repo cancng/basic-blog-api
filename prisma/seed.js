@@ -11,6 +11,7 @@ async function main() {
     data: {
       username: 'admin',
       password: '$2a$10$HRR49Dor51a4QTTjOZcQFu/K1XiKs1s6Kkr17yplhQZgC5cJnyV3q', //123123
+      role: 'ADMIN',
     },
   });
 

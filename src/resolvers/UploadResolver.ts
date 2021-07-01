@@ -1,18 +1,18 @@
 import {
   Arg,
+  Authorized,
   Field,
   Mutation,
   ObjectType,
   Resolver,
-  UseMiddleware,
 } from 'type-graphql';
 import { FileUpload } from 'graphql-upload';
 import { GraphQLUpload as GQLUpload } from 'apollo-server-express';
 import { parse } from 'path';
 import fs from 'fs';
 import { path } from 'app-root-path';
-import { isAuth } from '../middlewares/isAuth';
 import { generateSlug } from '../util/functions';
+import { UserRole } from '.prisma/client';
 
 @ObjectType()
 class UploadResponse {
@@ -22,7 +22,7 @@ class UploadResponse {
 
 @Resolver()
 export class UploadResolver {
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => UploadResponse)
   async uploadImage(
     @Arg('image', () => GQLUpload!)

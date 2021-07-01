@@ -1,5 +1,6 @@
 import { buildSchema } from 'type-graphql';
 import {
+  applyResolversEnhanceMap,
   relationResolvers,
   FindManyPostResolver,
   FindManyCategoryResolver,
@@ -8,6 +9,8 @@ import {
   FindManyCommentResolver,
   FindManyPageResolver,
   FindFirstPageResolver,
+  FindManyUserResolver,
+  FindUniqueUserResolver,
 } from '@generated/type-graphql';
 import { TestResolver } from '../resolvers/TestResolver';
 import { CategoryResolver } from '../resolvers/CategoryResolver';
@@ -16,8 +19,11 @@ import { UploadResolver } from '../resolvers/UploadResolver';
 import { PostResolver } from '../resolvers/PostResolver';
 import { CommentResolver } from '../resolvers/CommentResolver';
 import { PageResolver } from '../resolvers/PageResolver';
+import { customAuthChecker } from './authChecker';
+import { resolveEnhanceMap } from '../enhances';
 
 export default function createSchema() {
+  applyResolversEnhanceMap(resolveEnhanceMap);
   return buildSchema({
     resolvers: [
       UserResolver,
@@ -28,6 +34,8 @@ export default function createSchema() {
       TestResolver,
       UploadResolver,
       ...relationResolvers,
+      FindManyUserResolver,
+      FindUniqueUserResolver,
       FindManyPostResolver,
       FindManyCategoryResolver,
       FindFirstPostResolver,
@@ -36,5 +44,7 @@ export default function createSchema() {
       FindManyPageResolver,
       FindFirstPageResolver,
     ],
+    validate: false,
+    authChecker: customAuthChecker,
   });
 }

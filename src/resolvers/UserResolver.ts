@@ -1,6 +1,5 @@
 import {
   Arg,
-  Args,
   Ctx,
   Field,
   Mutation,
@@ -11,10 +10,10 @@ import {
 } from 'type-graphql';
 import bcrypt from 'bcryptjs';
 import { MyContext } from '../types/MyContext';
-// import { isEmpty } from 'class-validator';
 import { generateToken } from '../util/functions';
 import { isAuth } from '../middlewares/isAuth';
-import { User, FindManyUserArgs } from '@generated/type-graphql';
+import { User } from '@generated/type-graphql';
+import { RegisterInput } from '../resolvers/inputs/RegisterInput';
 
 @ObjectType()
 class LoginResponse {
@@ -50,6 +49,19 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => User)
+  async register(@Arg('data') data: RegisterInput, @Ctx() ctx: MyContext) {
+    try {
+      const password = await bcrypt.hash(data.password, 10);
+      return ctx.prisma.user.create({
+        data: { username: data.username, password },
+      });
+    } catch (error) {
+      console.log('catch err ⚠️', error.message);
+      throw error;
+    }
+  }
+
   @UseMiddleware(isAuth)
   @Query(() => User, {
     description: 'Returns user info which is logged in',
@@ -66,11 +78,5 @@ export class UserResolver {
       console.log('catch err ⚠️', error.message);
       throw error;
     }
-  }
-
-  @UseMiddleware(isAuth)
-  @Query(() => [User], { nullable: true })
-  async users(@Ctx() ctx: MyContext, @Args() args: FindManyUserArgs) {
-    return ctx.prisma.user.findMany(args);
   }
 }

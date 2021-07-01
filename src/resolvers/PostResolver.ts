@@ -1,13 +1,13 @@
-import { Arg, Ctx, ID, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Authorized, Ctx, ID, Mutation, Resolver } from 'type-graphql';
 import { Post } from '@generated/type-graphql';
 import { PostInput } from './inputs/PostInput';
-import { isAuth } from '../middlewares/isAuth';
 import { MyContext } from '../types/MyContext';
 import { generateCode, generateSlug } from '../util/functions';
+import { UserRole } from '.prisma/client';
 
 @Resolver()
 export class PostResolver {
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => Post)
   async createPost(
     @Arg('data') { title, body, thumbnail, categoryId }: PostInput,
@@ -35,7 +35,7 @@ export class PostResolver {
     }
   }
 
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => Post)
   async editPost(
     @Arg('id', () => ID) id: string,
@@ -76,7 +76,7 @@ export class PostResolver {
     }
   }
 
-  @UseMiddleware(isAuth)
+  @Authorized(UserRole.ADMIN)
   @Mutation(() => Post)
   async deletePost(@Arg('id', () => ID) id: string, @Ctx() ctx: MyContext) {
     try {

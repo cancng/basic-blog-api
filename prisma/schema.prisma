@@ -18,11 +18,13 @@ model User {
   id         String     @id @default(cuid())
   createdAt  DateTime   @default(now())
   username   String     @unique
+  /// @TypeGraphQL.omit(output: true)
   password   String
+  role       UserRole   @default(USER)
   posts      Post[]
   categories Category[]
   comments   Comment[]
-  Page       Page[]
+  pages      Page[]
 }
 
 model Post {
@@ -74,4 +76,10 @@ model Page {
   content   String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
+}
+
+enum UserRole {
+  ADMIN
+  WRITER
+  USER
 }
